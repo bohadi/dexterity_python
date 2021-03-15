@@ -93,6 +93,19 @@ class Orderbook(object):
                 qty = int(qty)
             print(qty)
 
+    def _fetch_PL(self, level, side):
+        if side == "B":
+            query = """SELECT price,sum(qty)
+                                FROM orders WHERE isBid=1
+                                GROUP BY price ORDER BY price DESC
+                    """
+        elif side == "A":
+            query = """SELECT price,sum(qty)
+                                FROM orders WHERE isBid=0
+                                GROUP BY price ORDER BY price ASC
+                    """
+        return self.cur.execute(query).fetchall()
+
     def print_level(self, level, side):
         """Print the price and quantity on the order book at given level and side.
 
@@ -106,17 +119,7 @@ class Orderbook(object):
         level = int(level)
         side = str(side)[0]
 
-        results = []
-        if side == "B":
-            results = self.cur.execute(
-                """SELECT price,sum(qty) FROM orders WHERE isBid=1
-                                GROUP BY price ORDER BY price DESC"""
-            ).fetchall()
-        elif side == "A":
-            results = self.cur.execute(
-                """SELECT price,sum(qty) FROM orders WHERE isBid=0
-                                GROUP BY price ORDER BY price ASC"""
-            ).fetchall()
+        results = self._fetch_PL(level, side)
 
         if int(level) - 1 >= len(results):
             # if empty price level, print 0,0
