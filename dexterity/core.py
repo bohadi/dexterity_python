@@ -2,29 +2,31 @@ import dexterity.util
 
 import sqlite3
 
+
 class Orderbook(object):
     """
-        Orderbook implementation with the following operations:
-        1, 2) Add and remove orders by ID number look-up
-        3) Print the quantity at the given price and side
-        4) Print the price and quantity at the given level and side
+    Orderbook implementation with the following operations:
+    1, 2) Add and remove orders by ID number look-up
+    3) Print the quantity at the given price and side
+    4) Print the price and quantity at the given level and side
     """
 
     def __init__(self):
-        '''Orderbook constructor
-        
+        """Orderbook constructor
+
         Creates an orderbook as an sqlite database.
-        '''
+        """
         # create the db in-memory
-        self.con = sqlite3.connect(':memory:')
+        self.con = sqlite3.connect(":memory:")
         self.cur = self.con.cursor()
-        self.cur.execute('''CREATE TABLE orders (id integer PRIMARY KEY, isBid integer, price real, qty real)''')
+        self.cur.execute(
+            """CREATE TABLE orders (id integer PRIMARY KEY, isBid integer, price real, qty real)"""
+        )
         self.con.commit()
 
     def close(self):
-        '''Close the db.'''
+        """Close the db."""
         self.con.close()
-
 
     def add_order(self, order_id, price, qty, side):
         """Add an order.
@@ -40,11 +42,14 @@ class Orderbook(object):
         qty = float(qty)
         side = str(side)[0]
 
-        if side == 'B':
-            self.cur.execute('INSERT INTO orders VALUES (?, 1, ?, ?)', (order_id, price, qty))
-        elif side == 'A':
-            self.cur.execute('INSERT INTO orders VALUES (?, 0, ?, ?)', (order_id, price, qty))
-
+        if side == "B":
+            self.cur.execute(
+                "INSERT INTO orders VALUES (?, 1, ?, ?)", (order_id, price, qty)
+            )
+        elif side == "A":
+            self.cur.execute(
+                "INSERT INTO orders VALUES (?, 0, ?, ?)", (order_id, price, qty)
+            )
 
     def remove_order(self, order_id):
         """Remove an order.
@@ -52,8 +57,7 @@ class Orderbook(object):
         :param id: order ID, integer
         """
         order_id = int(order_id)
-        self.cur.execute('DELETE FROM orders WHERE id=?', (str(order_id), ))
-
+        self.cur.execute("DELETE FROM orders WHERE id=?", (str(order_id),))
 
     def print_quantity_at(self, price, side):
         """Print the quantity on the order book at given price and side.
@@ -69,14 +73,18 @@ class Orderbook(object):
         side = str(side)[0]
 
         results = []
-        if side == 'B':
-            results = self.cur.execute('''SELECT sum(qty) FROM orders WHERE isBid=1 and price=?''',
-                                          (str(price), )).fetchall()
-        elif side == 'A':
-            results = self.cur.execute('''SELECT sum(qty) FROM orders WHERE isBid=0 and price=?''',
-                                          (str(price), )).fetchall()
+        if side == "B":
+            results = self.cur.execute(
+                """SELECT sum(qty) FROM orders WHERE isBid=1 and price=?""",
+                (str(price),),
+            ).fetchall()
+        elif side == "A":
+            results = self.cur.execute(
+                """SELECT sum(qty) FROM orders WHERE isBid=0 and price=?""",
+                (str(price),),
+            ).fetchall()
 
-        if len(results)==0:
+        if len(results) == 0:
             # if empty price, print 0 qty
             print(0)
         else:
@@ -84,7 +92,6 @@ class Orderbook(object):
             if qty.is_integer():
                 qty = int(qty)
             print(qty)
-
 
     def print_level(self, level, side):
         """Print the price and quantity on the order book at given level and side.
@@ -100,22 +107,24 @@ class Orderbook(object):
         side = str(side)[0]
 
         results = []
-        if side == 'B':
-            results = self.cur.execute('''SELECT price,sum(qty) FROM orders WHERE isBid=1
-                                GROUP BY price ORDER BY price DESC''').fetchall()
-        elif side == 'A':
-            results = self.cur.execute('''SELECT price,sum(qty) FROM orders WHERE isBid=0
-                                GROUP BY price ORDER BY price ASC''').fetchall()
+        if side == "B":
+            results = self.cur.execute(
+                """SELECT price,sum(qty) FROM orders WHERE isBid=1
+                                GROUP BY price ORDER BY price DESC"""
+            ).fetchall()
+        elif side == "A":
+            results = self.cur.execute(
+                """SELECT price,sum(qty) FROM orders WHERE isBid=0
+                                GROUP BY price ORDER BY price ASC"""
+            ).fetchall()
 
         if int(level) - 1 >= len(results):
             # if empty price level, print 0,0
-            print('0,0')
+            print("0,0")
         else:
-            price, qty = results[level -1]
+            price, qty = results[level - 1]
             if price.is_integer():
                 price = int(price)
             if qty.is_integer():
                 qty = int(qty)
-            print(f'{price},{qty}')
-
-
+            print(f"{price},{qty}")

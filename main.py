@@ -3,25 +3,26 @@
 import sys
 import dexterity.core
 
+
 def main():
     """ Entry point """
 
     ob = dexterity.core.Orderbook()
 
     for line in sys.stdin:
-        cmd, *params = line.split(',')
+        cmd, *params = line.split(",")
 
-        if cmd == 'A':
+        if cmd == "A":
             ob.add_order(*params)
-        elif cmd == 'R':
+        elif cmd == "R":
             ob.remove_order(*params)
-        elif cmd == 'P':
+        elif cmd == "P":
             ob.print_quantity_at(*params)
-        elif cmd == 'PL':
+        elif cmd == "PL":
             ob.print_level(*params)
 
         else:
-            print('Command not one of A, R, P, PL.')
+            print("Command not one of A, R, P, PL.")
 
     ob.close()
 
