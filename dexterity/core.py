@@ -42,11 +42,13 @@ class Orderbook(object):
         :param qty: quantity, double roudned to four decimals
         :param side: 'B' bid or 'A' ask
         """
-        # typecheck
-        order_id = int(order_id)
-        price = float(price)
-        qty = float(qty)
-        side = str(side)[0]
+        try:
+            order_id = int(order_id)
+            price = float(price)
+            qty = float(qty)
+            side = str(side)[0]
+        except ValueError:
+            print('didnt typecheck when adding order')
 
         if side == "B":
             self.cur.execute(
@@ -62,7 +64,11 @@ class Orderbook(object):
 
         :param id: order ID, integer
         """
-        order_id = int(order_id)
+        try:
+            order_id = int(order_id)
+        except ValueError:
+            print('didnt typecheck when removing order')
+
         self.cur.execute("DELETE FROM orders WHERE id=?", (str(order_id),))
 
     def _fetch_P(self, price, side):
@@ -83,9 +89,11 @@ class Orderbook(object):
         # commit pending transactions first
         self.con.commit()
 
-        # typecheck
-        price = float(price)
-        side = str(side)[0]
+        try:
+            price = float(price)
+            side = str(side)[0]
+        except ValueError:
+            print('didnt typecheck when getting quantity at')
 
         qty = self._fetch_P(price, side)
 
@@ -120,7 +128,6 @@ class Orderbook(object):
                 qty = int(qty)
         return price, qty
 
-
     def print_level(self, level, side):
         """Print the price and quantity on the order book at given level and side.
 
@@ -130,9 +137,11 @@ class Orderbook(object):
         # commit pending transactions first
         self.con.commit()
 
-        # typecheck
-        level = int(level)
-        side = str(side)[0]
+        try:
+            level = int(level)
+            side = str(side)[0]
+        except ValueError:
+            print('didnt typecheck when getting price level')
 
         price, qty = self._fetch_PL(level, side)
         print(f"{price},{qty}")
