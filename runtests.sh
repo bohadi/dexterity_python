@@ -16,6 +16,8 @@ echo ""
 echo ""
 
 echo "▒▒▒▒▒▒▒▒▒▒▒▒▒▒ INTEGRATION TESTS START ▒▒▒▒▒▒▒▒▒▒▒▒▒▒"
+mkdir -p tests/my
+
 cat tests/1.input | python main.py > tests/my/1.output
 cat tests/2.input | python main.py > tests/my/2.output
 cat tests/3.input | python main.py > tests/my/3.output
