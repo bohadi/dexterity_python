@@ -28,6 +28,14 @@ class Orderbook(object):
         """Close the db."""
         self.con.close()
 
+    def _all_bids(self):
+        query = """SELECT * FROM orders WHERE isBid=1"""
+        return self.cur.execute(query).fetchall()
+
+    def _all_asks(self):
+        query = """SELECT * FROM orders WHERE isBid=0"""
+        return self.cur.execute(query).fetchall()
+
     def add_order(self, order_id, price, qty, side):
         """Add an order.
 
