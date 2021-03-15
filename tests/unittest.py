@@ -37,10 +37,10 @@ class CoreTests(unittest.TestCase):
 
     def test_quantity_at_price(self):
         """The orderbook should give aggregate quantity at a given price."""
-        self.ob.add_order(10, 5, 3, "B")
+        self.ob.add_order(10, 5, 33, "B")
 
         qty = self.ob._fetch_P(5, "B")
-        self.assertEqual(6, qty)
+        self.assertEqual(36, qty)
 
         qty = self.ob._fetch_P(10, "B")
         self.assertEqual(4, qty)
@@ -51,6 +51,8 @@ class CoreTests(unittest.TestCase):
 
     def test_price_level(self):
         """The orderbook should give the nth best bid/ask price and aggregate quantity."""
+        self.ob.add_order(10, 5, 33, "B")
+
         ap3, aq3 = self.ob._fetch_PL(3, "A")
         ap2, aq2 = self.ob._fetch_PL(2, "A")
         ap1, aq1 = self.ob._fetch_PL(1, "A")
@@ -64,7 +66,7 @@ class CoreTests(unittest.TestCase):
         bp3, bq3 = self.ob._fetch_PL(3, "B")
 
         self.assertEqual(( 10,  4), (bp1, bq1))
-        self.assertEqual((  5,  3), (bp2, bq2))
+        self.assertEqual((  5, 36), (bp2, bq2))
         self.assertEqual((  0,  0), (bp3, bq3))
 
 
