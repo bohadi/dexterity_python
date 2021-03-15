@@ -48,7 +48,8 @@ class Orderbook(object):
             qty = float(qty)
             side = str(side)[0]
         except ValueError:
-            print('didnt typecheck when adding order')
+            print("didnt typecheck when adding order")
+            return
 
         if side == "B":
             self.cur.execute(
@@ -67,7 +68,8 @@ class Orderbook(object):
         try:
             order_id = int(order_id)
         except ValueError:
-            print('didnt typecheck when removing order')
+            print("didnt typecheck when removing order")
+            return
 
         self.cur.execute("DELETE FROM orders WHERE id=?", (str(order_id),))
 
@@ -93,7 +95,8 @@ class Orderbook(object):
             price = float(price)
             side = str(side)[0]
         except ValueError:
-            print('didnt typecheck when getting quantity at')
+            print("didnt typecheck when getting quantity at")
+            return
 
         qty = self._fetch_P(price, side)
 
@@ -141,7 +144,8 @@ class Orderbook(object):
             level = int(level)
             side = str(side)[0]
         except ValueError:
-            print('didnt typecheck when getting price level')
+            print("didnt typecheck when getting price level")
+            return
 
         price, qty = self._fetch_PL(level, side)
         print(f"{price},{qty}")
