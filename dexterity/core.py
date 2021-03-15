@@ -46,7 +46,7 @@ class Orderbook(object):
             order_id = int(order_id)
             price = float(price)
             qty = float(qty)
-            side = str(side)[0]
+            side = str(side)
         except ValueError:
             print("didnt typecheck when adding order")
             return
@@ -93,7 +93,7 @@ class Orderbook(object):
 
         try:
             price = float(price)
-            side = str(side)[0]
+            side = str(side)
         except ValueError:
             print("didnt typecheck when getting quantity at")
             return
@@ -142,7 +142,7 @@ class Orderbook(object):
 
         try:
             level = int(level)
-            side = str(side)[0]
+            side = str(side)
         except ValueError:
             print("didnt typecheck when getting price level")
             return
