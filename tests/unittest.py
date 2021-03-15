@@ -12,6 +12,7 @@ class CoreTests(unittest.TestCase):
         self.ob.add_order(4, 100, 44, "A")
 
     def test_bids_and_asks(self):
+        """The orderbook should add bids and asks."""
         bids = self.ob._all_bids()
         self.assertEqual(2, bids[1][0])
         self.assertEqual(10, bids[1][-2])
@@ -24,6 +25,7 @@ class CoreTests(unittest.TestCase):
         return
 
     def test_remove_orders(self):
+        """The orderbook should remove bids and asks."""
         bids_before = self.ob._all_bids()
         self.ob.remove_order(1)
         self.ob.remove_order(2)
@@ -34,6 +36,7 @@ class CoreTests(unittest.TestCase):
         return
 
     def test_quantity_at_price(self):
+        """The orderbook should give aggregate quantity at a given price."""
         self.ob.add_order(10, 5, 3, "B")
 
         qty = self.ob._fetch_P(5, "B")
@@ -47,6 +50,7 @@ class CoreTests(unittest.TestCase):
         return
 
     def test_price_level(self):
+        """The orderbook should give the nth best bid/ask price and aggregate quantity."""
         ap3, aq3 = self.ob._fetch_PL(3, "A")
         ap2, aq2 = self.ob._fetch_PL(2, "A")
         ap1, aq1 = self.ob._fetch_PL(1, "A")
