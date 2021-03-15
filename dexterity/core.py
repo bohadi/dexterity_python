@@ -84,8 +84,8 @@ class Orderbook(object):
                 (str(price),),
             ).fetchall()
 
-        if len(results) == 0:
-            # if empty price, print 0 qty
+        if not results[0][0]:
+            # if empty price, print 0 qty  [(None,)]
             print(0)
         else:
             qty = results[0][0]
