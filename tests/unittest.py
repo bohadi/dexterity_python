@@ -39,13 +39,13 @@ class CoreTests(unittest.TestCase):
         """The orderbook should give aggregate quantity at a given price."""
         self.ob.add_order(10, 5, 33, "B")
 
-        qty = self.ob._fetch_P(5, "B")
+        qty = self.ob._fetch_P(5, dexterity.core.Orderbook._side2int("B"))
         self.assertEqual(36, qty)
 
-        qty = self.ob._fetch_P(10, "B")
+        qty = self.ob._fetch_P(10, dexterity.core.Orderbook._side2int("B"))
         self.assertEqual(4, qty)
 
-        qty = self.ob._fetch_P(100, "B")
+        qty = self.ob._fetch_P(100, dexterity.core.Orderbook._side2int("B"))
         self.assertIsNone(qty)
         return
 
@@ -53,17 +53,17 @@ class CoreTests(unittest.TestCase):
         """The orderbook should give the nth best bid/ask price and aggregate quantity."""
         self.ob.add_order(10, 5, 33, "B")
 
-        ap3, aq3 = self.ob._fetch_PL(3, "A")
-        ap2, aq2 = self.ob._fetch_PL(2, "A")
-        ap1, aq1 = self.ob._fetch_PL(1, "A")
+        ap3, aq3 = self.ob._fetch_PL(3, dexterity.core.Orderbook._side2int("A"))
+        ap2, aq2 = self.ob._fetch_PL(2, dexterity.core.Orderbook._side2int("A"))
+        ap1, aq1 = self.ob._fetch_PL(1, dexterity.core.Orderbook._side2int("A"))
 
         self.assertEqual((  0,  0), (ap3, aq3))
         self.assertEqual((100, 44), (ap2, aq2))
         self.assertEqual(( 50, 33), (ap1, aq1))
 
-        bp1, bq1 = self.ob._fetch_PL(1, "B")
-        bp2, bq2 = self.ob._fetch_PL(2, "B")
-        bp3, bq3 = self.ob._fetch_PL(3, "B")
+        bp1, bq1 = self.ob._fetch_PL(1, dexterity.core.Orderbook._side2int("B"))
+        bp2, bq2 = self.ob._fetch_PL(2, dexterity.core.Orderbook._side2int("B"))
+        bp3, bq3 = self.ob._fetch_PL(3, dexterity.core.Orderbook._side2int("B"))
 
         self.assertEqual(( 10,  4), (bp1, bq1))
         self.assertEqual((  5, 36), (bp2, bq2))

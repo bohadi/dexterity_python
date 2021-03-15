@@ -9,6 +9,13 @@ class Orderbook(object):
     4) Print the price and quantity at the given level and side
     """
 
+    @staticmethod
+    def _side2int(side):
+        side_int = 1
+        if side == "A":
+            side_int = 0
+        return side_int
+
     def __init__(self):
         """Orderbook constructor
 
@@ -46,19 +53,14 @@ class Orderbook(object):
             order_id = int(order_id)
             price = float(price)
             qty = float(qty)
-            side = str(side)
+            side = Orderbook._side2int(str(side))
         except ValueError:
             print("didnt typecheck when adding order")
             return
 
-        if side == "B":
-            self.cur.execute(
-                "INSERT INTO orders VALUES (?, 1, ?, ?)", (order_id, price, qty)
-            )
-        elif side == "A":
-            self.cur.execute(
-                "INSERT INTO orders VALUES (?, 0, ?, ?)", (order_id, price, qty)
-            )
+        self.cur.execute(
+            "INSERT INTO orders VALUES (?, ?, ?, ?)", (order_id, side, price, qty)
+        )
 
     def remove_order(self, order_id):
         """Remove an order.
@@ -74,12 +76,8 @@ class Orderbook(object):
         self.cur.execute("DELETE FROM orders WHERE id=?", (str(order_id),))
 
     def _fetch_P(self, price, side):
-        if side == "B":
-            query = f"""SELECT sum(qty) FROM orders
-                                WHERE isBid=1 and price={price}"""
-        elif side == "A":
-            query = f"""SELECT sum(qty) FROM orders
-                                WHERE isBid=0 and price={price}"""
+        query = f"""SELECT sum(qty) FROM orders
+                            WHERE isBid={side} and price={price}"""
         return self.cur.execute(query).fetchall()[0][0]
 
     def print_quantity_at(self, price, side):
@@ -93,7 +91,7 @@ class Orderbook(object):
 
         try:
             price = float(price)
-            side = str(side)
+            side = Orderbook._side2int(str(side))
         except ValueError:
             print("didnt typecheck when getting quantity at")
             return
@@ -109,16 +107,12 @@ class Orderbook(object):
             print(qty)
 
     def _fetch_PL(self, level, side):
-        if side == "B":
-            query = """SELECT price,sum(qty)
-                                FROM orders WHERE isBid=1
-                                GROUP BY price ORDER BY price DESC
-                    """
-        elif side == "A":
-            query = """SELECT price,sum(qty)
-                                FROM orders WHERE isBid=0
-                                GROUP BY price ORDER BY price ASC
-                    """
+        # best bid highest, best ask lowest
+        ordering = "DESC" if side else "ASC"
+        query = f"""SELECT price,sum(qty)
+                            FROM orders WHERE isBid={side}
+                            GROUP BY price ORDER BY price {ordering}
+                """
 
         results = self.cur.execute(query).fetchall()
 
@@ -142,7 +136,7 @@ class Orderbook(object):
 
         try:
             level = int(level)
-            side = str(side)
+            side = Orderbook._side2int(str(side))
         except ValueError:
             print("didnt typecheck when getting price level")
             return
