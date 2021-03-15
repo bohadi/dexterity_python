@@ -6,7 +6,6 @@ setup(
     version="0.1.0",
     packages=['dexterity',
               'dexterity.core',
-              'dexterity.utils',
               'tests',
               ],
     install_requires=[]

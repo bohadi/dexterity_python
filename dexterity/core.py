@@ -1,5 +1,3 @@
-import dexterity.util
-
 import sqlite3
 
 

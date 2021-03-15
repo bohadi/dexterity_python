@@ -2,7 +2,7 @@
 
 
 echo "▒▒▒▒▒▒▒▒▒▒▒▒▒▒ DOCTEST START ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒"
-python3 -m doctest -v dexterity/core.py dexterity/util.py
+python3 -m doctest -v dexterity/core.py
 echo "▒▒▒▒▒▒▒▒▒▒▒▒▒▒ DOCTEST END ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒"
 
 echo ""
