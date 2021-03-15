@@ -11,6 +11,12 @@ class Orderbook(object):
 
     @staticmethod
     def _side2int(side):
+        """Sends the side (str) to the appropriate int
+        >>> Orderbook._side2int("B")
+        1
+        >>> Orderbook._side2int("A")
+        0
+        """
         side_int = 1
         if side == "A":
             side_int = 0
