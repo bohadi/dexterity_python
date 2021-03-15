@@ -33,6 +33,36 @@ class CoreTests(unittest.TestCase):
         self.assertEqual([], bids_after)
         return
 
+    def test_quantity_at_price(self):
+        self.ob.add_order(10, 5, 3, "B")
+
+        qty = self.ob._fetch_P(5, "B")
+        self.assertEqual(6, qty)
+
+        qty = self.ob._fetch_P(10, "B")
+        self.assertEqual(4, qty)
+
+        qty = self.ob._fetch_P(100, "B")
+        self.assertIsNone(qty)
+        return
+
+    def test_price_level(self):
+        ap3, aq3 = self.ob._fetch_PL(3, "A")
+        ap2, aq2 = self.ob._fetch_PL(2, "A")
+        ap1, aq1 = self.ob._fetch_PL(1, "A")
+
+        self.assertEqual((  0,  0), (ap3, aq3))
+        self.assertEqual((100, 44), (ap2, aq2))
+        self.assertEqual(( 50, 33), (ap1, aq1))
+
+        bp1, bq1 = self.ob._fetch_PL(1, "B")
+        bp2, bq2 = self.ob._fetch_PL(2, "B")
+        bp3, bq3 = self.ob._fetch_PL(3, "B")
+
+        self.assertEqual(( 10,  4), (bp1, bq1))
+        self.assertEqual((  5,  3), (bp2, bq2))
+        self.assertEqual((  0,  0), (bp3, bq3))
+
 
 if __name__ == "__main__":
     unittest.main()

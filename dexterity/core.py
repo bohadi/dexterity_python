@@ -65,6 +65,15 @@ class Orderbook(object):
         order_id = int(order_id)
         self.cur.execute("DELETE FROM orders WHERE id=?", (str(order_id),))
 
+    def _fetch_P(self, price, side):
+        if side == "B":
+            query = f"""SELECT sum(qty) FROM orders
+                                WHERE isBid=1 and price={price}"""
+        elif side == "A":
+            query = f"""SELECT sum(qty) FROM orders
+                                WHERE isBid=0 and price={price}"""
+        return self.cur.execute(query).fetchall()[0][0]
+
     def print_quantity_at(self, price, side):
         """Print the quantity on the order book at given price and side.
 
@@ -78,23 +87,12 @@ class Orderbook(object):
         price = float(price)
         side = str(side)[0]
 
-        results = []
-        if side == "B":
-            results = self.cur.execute(
-                """SELECT sum(qty) FROM orders WHERE isBid=1 and price=?""",
-                (str(price),),
-            ).fetchall()
-        elif side == "A":
-            results = self.cur.execute(
-                """SELECT sum(qty) FROM orders WHERE isBid=0 and price=?""",
-                (str(price),),
-            ).fetchall()
+        qty = self._fetch_P(price, side)
 
-        if not results[0][0]:
+        if qty is None:
             # if empty price, print 0 qty  [(None,)]
             print(0)
         else:
-            qty = results[0][0]
             if qty.is_integer():
                 qty = int(qty)
             print(qty)
@@ -110,7 +108,18 @@ class Orderbook(object):
                                 FROM orders WHERE isBid=0
                                 GROUP BY price ORDER BY price ASC
                     """
-        return self.cur.execute(query).fetchall()
+
+        results = self.cur.execute(query).fetchall()
+
+        price, qty = 0, 0
+        if int(level) - 1 < len(results):
+            price, qty = results[level - 1]
+            if price.is_integer():
+                price = int(price)
+            if qty.is_integer():
+                qty = int(qty)
+        return price, qty
+
 
     def print_level(self, level, side):
         """Print the price and quantity on the order book at given level and side.
@@ -125,15 +134,5 @@ class Orderbook(object):
         level = int(level)
         side = str(side)[0]
 
-        results = self._fetch_PL(level, side)
-
-        if int(level) - 1 >= len(results):
-            # if empty price level, print 0,0
-            print("0,0")
-        else:
-            price, qty = results[level - 1]
-            if price.is_integer():
-                price = int(price)
-            if qty.is_integer():
-                qty = int(qty)
-            print(f"{price},{qty}")
+        price, qty = self._fetch_PL(level, side)
+        print(f"{price},{qty}")
