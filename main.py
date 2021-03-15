@@ -10,7 +10,7 @@ def main():
     ob = dexterity.core.Orderbook()
 
     for line in sys.stdin:
-        cmd, *params = line.split(",")
+        cmd, *params = line.strip().split(",")
 
         if cmd == "A":
             ob.add_order(*params)

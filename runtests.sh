@@ -25,6 +25,7 @@ cat tests/4.input | python main.py > tests/my/4.output
 cat tests/5.input | python main.py > tests/my/5.output
 cat tests/6.input | python main.py > tests/my/6.output
 cat tests/7.input | python main.py > tests/my/7.output
+cat tests/8.input | python main.py > tests/my/8.output
 
 echo "Diffing example inputs"
 
@@ -35,4 +36,5 @@ diff -s tests/my/4.output tests/check/4.output
 diff -s tests/my/5.output tests/check/5.output
 diff -s tests/my/6.output tests/check/6.output
 diff -s tests/my/7.output tests/check/7.output
+diff -s tests/my/8.output tests/check/8.output
 echo "▒▒▒▒▒▒▒▒▒▒▒▒▒▒ INTEGRATION TESTS END ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒"
